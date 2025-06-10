@@ -1,0 +1,45 @@
+services:
+  api:
+    build:
+      context: .
+      dockerfile: ReservationSystem.API/Dockerfile
+    ports:
+      - "5284:5284"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Server=db;Database=ReservationSystem;User=sa;Password=Your_password123;TrustServerCertificate=true;
+    networks:
+      - reservationsnet
+    depends_on:
+      - db
+
+  db:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: reservationsql
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=Your_password123
+      - MSSQL_PID=Express
+    ports:
+      - "1433:1433"
+    volumes:
+      - sqlvolume:/var/opt/mssql
+    networks:
+      - reservationsnet
+
+  client:
+    build:
+      context: .
+      dockerfile: ReservationSystem.Client/Dockerfile
+    ports:
+      - "5052:5052"
+    depends_on:
+      - api
+    networks:
+      - reservationsnet
+
+volumes:
+  sqlvolume:
+
+networks:
+  reservationsnet:
