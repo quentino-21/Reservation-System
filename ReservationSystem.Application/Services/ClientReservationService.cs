@@ -30,19 +30,21 @@ public class ClientReservationService : IClientReservationService
             throw new UnauthorizedAccessException("User is not logged in");
         }
 
-        var baseQuery = _context.Reservations.AsQueryable()
-            .Where(x => x.UserId == userId);
-        
-        var count = await baseQuery.CountAsync(ct);
-        
-        var items = await baseQuery
-            .Select(x => ReservationMappers.MapToReservationDto(x))
-            .Paginate(filterDto.PageNumber, filterDto.PageSize)
+        var reservations = await _context.Reservations
+            .Where(x => x.UserId == userId)
+            .Include(r => r.Product)
+            .Skip((filterDto.PageNumber - 1) * filterDto.PageSize)
+            .Take(filterDto.PageSize)
+            .AsNoTracking()
             .ToListAsync(ct);
-        
-        var result = new PaginatedResponseDto<ReservationDto>(items, filterDto.PageNumber, filterDto.PageSize, count);
-        
-        return result;
+
+        var items = reservations.Select(r =>
+            ReservationMappers.MapToReservationDto(r, r.Product!)
+        ).ToList();
+
+        var count = await _context.Reservations.CountAsync(ct);
+
+        return new PaginatedResponseDto<ReservationDto>(items, filterDto.PageNumber, filterDto.PageSize, count);
     }
 
     public async Task<ReservationDto> GetReservationByIdAsync(Guid id, CancellationToken ct)
@@ -59,7 +61,13 @@ public class ClientReservationService : IClientReservationService
             throw new NotFoundException("Reservation not found");
         }
         
-        var reservationDto = ReservationMappers.MapToReservationDto(reservation);
+        var product = await _context.Products.FirstOrDefaultAsync(x => x.Id == reservation.ProductId, ct);
+        if (product == null)
+        {
+            throw new NotFoundException("Product not found for this reservation");
+        }
+        
+        var reservationDto = ReservationMappers.MapToReservationDto(reservation, product);
         
         return reservationDto;
     }
@@ -104,6 +112,11 @@ public class ClientReservationService : IClientReservationService
         if (reservation == null)
         {
             throw new NotFoundException("Reservation not found");
+        }
+
+        if (reservation.Status != ReservationStatus.Pending || reservation.Status != ReservationStatus.Confirmed)
+        {
+            throw new BadRequestException("Reservation has to be Pending or Confirmed");
         }
 
         reservation.Status = ReservationStatus.Cancelled;

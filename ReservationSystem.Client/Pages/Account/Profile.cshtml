@@ -1,0 +1,41 @@
+@page
+@model ProfileModel
+@{
+    ViewData["Title"] = "Profil użytkownika";
+}
+
+<h2>Profil użytkownika</h2>
+
+@if (!string.IsNullOrEmpty(Model.StatusMessage))
+{
+    <div class="alert alert-info">@Model.StatusMessage</div>
+}
+
+<form method="post">
+    <div class="mb-3">
+        <label class="form-label">Imię</label>
+        <input asp-for="User.Name" class="form-control" />
+        <span asp-validation-for="User.Name" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Nazwisko</label>
+        <input asp-for="User.Surname" class="form-control" />
+        <span asp-validation-for="User.Surname" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Email</label>
+        <input asp-for="User.Email" class="form-control" />
+        <span asp-validation-for="User.Email" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Rola</label>
+        <input asp-for="User.Role" class="form-control" readonly />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Zapisz zmiany</button>
+</form>
+
+<a href="/Account/ChangePassword">Zmień hasło</a>

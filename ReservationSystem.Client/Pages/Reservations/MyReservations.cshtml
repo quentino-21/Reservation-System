@@ -1,0 +1,57 @@
+@page
+@model MyReservationsModel
+@{
+    ViewData["Title"] = "Moje Rezerwacje";
+}
+
+<h2>Moje Rezerwacje</h2>
+
+@if (Model.Reservations.Items.Count == 0)
+{
+    <p>Brak rezerwacji.</p>
+}
+else
+{
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Usługa</th>
+            <th>Data</th>
+            <th>Status</th>
+            <th>Cena</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var product in Model.Reservations.Items)
+        {
+            <tr>
+                <td>@product.ProductName</td>
+                <td>@product.StartTime</td>
+                <td>@product.Status</td>
+                <td>
+                    <a asp-page="/Reservations/Details" asp-route-id="@product.Id" class="btn btn-primary">Zobacz</a>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+
+    <nav>
+        <ul class="pagination">
+            <li class="page-item @(Model.PageNumber == 1 ? "disabled" : "")">
+                <a class="page-link" href="?PageNumber=@(Model.PageNumber - 1)&PageSize=@Model.PageSize">Poprzednia</a>
+            </li>
+
+            @for (int i = 1; i <= Model.Reservations.PageNumber; i++)
+            {
+                <li class="page-item @(i == Model.PageNumber ? "active" : "")">
+                    <a class="page-link" href="?PageNumber=@i&PageSize=@Model.PageSize">@i</a>
+                </li>
+            }
+
+            <li class="page-item @(Model.PageNumber == Model.Reservations.TotalPages ? "disabled" : "")">
+                <a class="page-link" href="?PageNumber=@(Model.PageNumber + 1)&PageSize=@Model.PageSize">Następna</a>
+            </li>
+        </ul>
+    </nav>
+}

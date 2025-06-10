@@ -1,0 +1,37 @@
+@page "{id:guid}"
+@model DetailsModelServices
+@{
+    ViewData["Title"] = "Szczegóły usługi";
+}
+
+<h2>Szczegóły usługi</h2>
+
+@if (Model.Product is null)
+{
+    <p>Usługa nie została znaleziona.</p>
+}
+else
+{
+    <dl class="row">
+        <dt class="col-sm-2">Nazwa</dt>
+        <dd class="col-sm-10">@Model.Product.Name</dd>
+
+        <dt class="col-sm-2">Opis</dt>
+        <dd class="col-sm-10">@Model.Product.Description</dd>
+
+        <dt class="col-sm-2">Czas trwania</dt>
+        <dd class="col-sm-10">@Model.Product.Duration</dd>
+
+        <dt class="col-sm-2">Cena</dt>
+        <dd class="col-sm-10">@Model.Product.Price.ToString("C")</dd>
+    </dl>
+
+    @if (Model.UserRole == "Admin")
+    {
+        <a asp-page="/Services/Edit" asp-route-id="@Model.Product.Id" class="btn btn-warning">Edytuj</a>
+    }
+    else
+    {
+        <a asp-page="/Reservations/Create" asp-route-ProductId="@Model.Product.Id" class="btn btn-success">Złóż rezerwację</a>
+    }
+}

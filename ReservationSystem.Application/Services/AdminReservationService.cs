@@ -26,7 +26,7 @@ public class AdminReservationService : IAdminReservationService
 
         if (reservation.Status != ReservationStatus.Pending)
         {
-            throw new BadRequestException("Reservation could not be confirmed");
+            throw new BadRequestException("Reservation status has to be pending");
         }
         
         reservation.Status = ReservationStatus.Confirmed;
@@ -44,7 +44,7 @@ public class AdminReservationService : IAdminReservationService
         
         if (reservation.Status != ReservationStatus.Pending)
         {
-            throw new BadRequestException("Reservation could not be rejected");
+            throw new BadRequestException("Reservation status has to be pending");
         }
         
         reservation.Status = ReservationStatus.Rejected;
@@ -64,7 +64,7 @@ public class AdminReservationService : IAdminReservationService
 
         if (now < reservation.StartTime || reservation.Status != ReservationStatus.Confirmed)
         {
-            throw new BadRequestException("Reservation could not be completed");
+            throw new BadRequestException("Reservation status has to be confirmed");
         }
         
         reservation.Status = ReservationStatus.Completed;

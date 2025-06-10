@@ -72,7 +72,7 @@ public static class AdminApi
         
         group.MapPost("/reservations/{id:guid}/complete", async (IAdminReservationService adminReservationService, Guid id, CancellationToken ct) =>
             {
-                await adminReservationService.RejectReservationAsync(id, ct);
+                await adminReservationService.CompleteReservationAsync(id, ct);
 
                 return Results.Ok();
             })

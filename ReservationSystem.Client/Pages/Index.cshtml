@@ -1,0 +1,68 @@
+﻿@page
+@model IndexModel
+
+<div class="text-center">
+    <h1 class="display-4">Witaj w Systemie Rezerwacji</h1>
+    @if (Model.ResponseDto is not null)
+    {
+        <div class="location-card">
+            <h3>Twoje dane lokalizacyjne</h3>
+            <ul class="location-list">
+                <li><strong>Państwo:</strong> @Model.ResponseDto.Country</li>
+                <li><strong>Kod kraju:</strong> @Model.ResponseDto.Country_Code</li>
+                <li><strong>Region:</strong> @Model.ResponseDto.Region</li>
+                <li><strong>Miasto:</strong> @Model.ResponseDto.City</li>
+                <li>
+                    <strong>Adres IP:</strong>
+                    <span id="ip-address" class="blurred" onclick="toggleIpVisibility()">@Model.ResponseDto.Ip</span>
+                    <button type="button" onclick="toggleIpVisibility()" class="btn btn-sm btn-outline-secondary ms-2">Pokaż/Ukryj</button>
+                </li>
+            </ul>
+        </div>
+    }
+
+    <style>
+    .location-card {
+        max-width: 400px;
+        margin: 20px auto;
+        padding: 15px;
+        border-radius: 10px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        font-family: Arial, sans-serif;
+    }
+    .location-card h3 {
+        text-align: center;
+        margin-bottom: 15px;
+    }
+    .location-list {
+        list-style: none;
+        padding: 0;
+    }
+    .location-list li {
+        padding: 8px 0;
+        border-bottom: 1px solid #ddd;
+    }
+    .location-list li strong {
+        width: 100px;
+        display: inline-block;
+    }
+    .blurred {
+        filter: blur(5px);
+        cursor: pointer;
+        user-select: none;
+    }
+</style>
+
+    <script>
+    function toggleIpVisibility() {
+        const ipElem = document.getElementById('ip-address');
+        if (ipElem.classList.contains('blurred')) {
+            ipElem.classList.remove('blurred');
+        } else {
+            ipElem.classList.add('blurred');
+        }
+    }
+</script>
+
+
+</div>

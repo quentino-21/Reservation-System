@@ -1,0 +1,59 @@
+@page
+@model ServicesModel
+@{
+    ViewData["Title"] = "Usługi";
+}
+
+<h2>Dostępne usługi</h2>
+
+@if (Model.Products.Items.Count == 0)
+{
+    <p>Brak usług.</p>
+}
+else
+{
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Nazwa</th>
+            <th>Opis</th>
+            <th>Czas trwania</th>
+            <th>Cena</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var product in Model.Products.Items)
+        {
+            <tr>
+                <td>@product.Name</td>
+                <td>@product.Description</td>
+                <td>@product.Duration</td>
+                <td>@product.Price.ToString() zł</td>
+                <td>
+                    <a asp-page="/Services/Details" asp-route-id="@product.Id" class="btn btn-primary">Zobacz</a>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+
+    <nav>
+        <ul class="pagination">
+            <li class="page-item @(Model.PageNumber == 1 ? "disabled" : "")">
+                <a class="page-link" href="?PageNumber=@(Model.PageNumber - 1)&PageSize=@Model.PageSize">Poprzednia</a>
+            </li>
+
+            @for (int i = 1; i <= Model.Products.PageNumber; i++)
+            {
+                <li class="page-item @(i == Model.PageNumber ? "active" : "")">
+                    <a class="page-link" href="?PageNumber=@i&PageSize=@Model.PageSize">@i</a>
+                </li>
+            }
+
+            <li class="page-item @(Model.PageNumber == Model.Products.TotalPages ? "disabled" : "")">
+                <a class="page-link" href="?PageNumber=@(Model.PageNumber + 1)&PageSize=@Model.PageSize">Następna</a>
+            </li>
+        </ul>
+    </nav>
+}

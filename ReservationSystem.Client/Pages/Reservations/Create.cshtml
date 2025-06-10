@@ -1,0 +1,37 @@
+@page
+@model ReservationSystem.Client.Pages.Reservations.CreateModel
+@{
+    ViewData["Title"] = "Złóż rezerwację";
+}
+
+<h2>Złóż rezerwację</h2>
+
+<form method="post">
+    <div class="mb-3">
+        <label class="form-label">Produkt ID</label>
+        <input asp-for="ProductId" class="form-control" readonly />
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Data</label>
+        <input asp-for="Date" type="date" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Godzina</label>
+        <select asp-for="Time" class="form-select">
+            @foreach (var time in Model.AvailableTimes)
+            {
+                <option value="@time">@time</option>
+            }
+        </select>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Zarezerwuj</button>
+</form>
+
+
+@if (!ModelState.IsValid)
+{
+    <div class="text-danger mt-2">Formularz zawiera błędy.</div>
+}

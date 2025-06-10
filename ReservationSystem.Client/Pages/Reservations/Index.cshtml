@@ -1,0 +1,64 @@
+@page
+@model ReservationSystem.Client.Pages.Reservations.IndexModel
+@{
+    ViewData["Title"] = "Wszystkie Rezerwacje (Admin)";
+}
+
+<h2>Wszystkie Rezerwacje</h2>
+
+@if (!string.IsNullOrEmpty(Model.StatusMessage))
+{
+    <div class="alert alert-danger">@Model.StatusMessage</div>
+}
+
+@if (Model.Reservations is null || Model.Reservations.Items.Count == 0)
+{
+    <p>Brak rezerwacji do wyświetlenia.</p>
+}
+else
+{
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Usługa</th>
+            <th>Data</th>
+            <th>Status</th>
+            <th>Klient</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var r in Model.Reservations.Items)
+        {
+            <tr>
+                <td>@r.ProductName</td>
+                <td>@r.StartTime</td>
+                <td>@r.Status</td>
+                <td>@r.UserId</td>
+                <td>
+                    <a asp-page="/Reservations/Details" asp-route-id="@r.Id" class="btn btn-primary">Szczegóły</a>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+
+    <nav>
+        <ul class="pagination">
+            <li class="page-item @(Model.PageNumber == 1 ? "disabled" : "")">
+                <a class="page-link" href="?PageNumber=@(Model.PageNumber - 1)&PageSize=@Model.PageSize">Poprzednia</a>
+            </li>
+
+            @for (int i = 1; i <= Model.Reservations.TotalPages; i++)
+            {
+                <li class="page-item @(i == Model.PageNumber ? "active" : "")">
+                    <a class="page-link" href="?PageNumber=@i&PageSize=@Model.PageSize">@i</a>
+                </li>
+            }
+
+            <li class="page-item @(Model.PageNumber == Model.Reservations.TotalPages ? "disabled" : "")">
+                <a class="page-link" href="?PageNumber=@(Model.PageNumber + 1)&PageSize=@Model.PageSize">Następna</a>
+            </li>
+        </ul>
+    </nav>
+}

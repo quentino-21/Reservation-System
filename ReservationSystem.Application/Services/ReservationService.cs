@@ -3,6 +3,7 @@ using ReservationSystem.Application.Mappers;
 using ReservationSystem.Application.Utils;
 using ReservationSystem.Domain.Common;
 using ReservationSystem.Domain.Dtos.Reservation;
+using ReservationSystem.Domain.Entities;
 using ReservationSystem.Domain.Exceptions;
 using ReservationSystem.Domain.Interfaces;
 using ReservationSystem.Infrastructure.Contexts;
@@ -20,18 +21,20 @@ public class ReservationService : IReservationService
     
     public async Task<PaginatedResponseDto<ReservationDto>> GetReservationsAsync(PageQueryFilterDto filterDto, CancellationToken ct)
     {
-        var baseQuery = _context.Reservations.AsQueryable();
-        
-        var count = baseQuery.Count();
-
-        var items = await baseQuery
-            .Select(x => ReservationMappers.MapToReservationDto(x))
-            .Paginate(filterDto.PageNumber, filterDto.PageSize)
+        var reservations = await _context.Reservations
+            .Include(r => r.Product)
+            .Skip((filterDto.PageNumber - 1) * filterDto.PageSize)
+            .Take(filterDto.PageSize)
+            .AsNoTracking()
             .ToListAsync(ct);
 
-        var result = new PaginatedResponseDto<ReservationDto>(items, count, filterDto.PageNumber, filterDto.PageSize);
-        
-        return result;
+        var items = reservations.Select(r =>
+            ReservationMappers.MapToReservationDto(r, r.Product!)
+        ).ToList();
+
+        var count = await _context.Reservations.CountAsync(ct);
+
+        return new PaginatedResponseDto<ReservationDto>(items, filterDto.PageNumber, filterDto.PageSize, count);
     }
 
     public async Task<ReservationDto> GetReservationByIdAsync(Guid id, CancellationToken ct)
@@ -42,7 +45,13 @@ public class ReservationService : IReservationService
             throw new NotFoundException("Reservation not found");
         }
         
-        var reservationDto = ReservationMappers.MapToReservationDto(reservation);
+        var product = await _context.Products.FirstOrDefaultAsync(x => x.Id == reservation.ProductId, ct);
+        if (product == null)
+        {
+            throw new NotFoundException("Product not found for this reservation");
+        }
+        
+        var reservationDto = ReservationMappers.MapToReservationDto(reservation, product);
 
         return reservationDto;
     }

@@ -1,0 +1,47 @@
+@page "{id:guid}"
+@model DetailsModelReservations
+
+<h2>Szczegóły Rezerwacji</h2>
+
+@if (!ViewData.ModelState.IsValid)
+{
+    <div class="alert alert-danger">
+        @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+        {
+            <p>@error.ErrorMessage</p>
+        }
+    </div>
+}
+
+@if (Model.Reservation is not null)
+{
+    <dl class="row">
+        <dt class="col-sm-2">Usługa</dt>
+        <dd class="col-sm-10">@Model.Reservation.ProductName</dd>
+
+        <dt class="col-sm-2">Data</dt>
+        <dd class="col-sm-10">@Model.Reservation.StartTime</dd>
+
+        <dt class="col-sm-2">Status</dt>
+        <dd class="col-sm-10">@Model.Reservation.Status</dd>
+    </dl>
+    @if (Model.UserRole == "Admin")
+    {
+        <form method="post" asp-page-handler="confirm">
+            <button type="submit" class="btn btn-success">Potwierdź</button>
+        </form>
+        <form method="post" asp-page-handler="reject" class="mt-2">
+            <button type="submit" class="btn btn-danger">Odrzuć</button>
+        </form>
+        <form method="post" asp-page-handler="complete" class="mt-2">
+            <button type="submit" class="btn btn-primary">Zakończ</button>
+        </form>
+    }
+    else if (Model.UserRole == "Client")
+    {
+        <form method="post" asp-page-handler="Cancel">
+            <button type="submit" class="btn btn-warning">Anuluj</button>
+        </form>
+    }
+
+}

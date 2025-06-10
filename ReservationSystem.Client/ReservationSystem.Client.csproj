@@ -1,0 +1,40 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+    <PropertyGroup>
+        <TargetFramework>net9.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.5" />
+      <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="9.0.4" />
+      <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.4" />
+      <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.4" />
+      <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.4">
+        <PrivateAssets>all</PrivateAssets>
+        <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      </PackageReference>
+    </ItemGroup>
+
+    <ItemGroup>
+      <_ContentIncludedByDefault Remove="Pages\Admin\Services\Create.cshtml" />
+      <_ContentIncludedByDefault Remove="Pages\Admin\Services\Delete.cshtml" />
+      <_ContentIncludedByDefault Remove="Pages\Admin\Services\Edit.cshtml" />
+      <_ContentIncludedByDefault Remove="Pages\Admin\Services\Index.cshtml" />
+      <_ContentIncludedByDefault Remove="Pages\Reservations\Create.cshtml" />
+      <_ContentIncludedByDefault Remove="Pages\Reservations\MyReservations.cshtml" />
+      <_ContentIncludedByDefault Remove="Pages\Services\Index.cshtml" />
+      <_ContentIncludedByDefault Remove="Pages\Auth\Login.cshtml" />
+      <_ContentIncludedByDefault Remove="Pages\Auth\Register.cshtml" />
+      <_ContentIncludedByDefault Remove="Pages\Products\Create.cshtml" />
+      <_ContentIncludedByDefault Remove="Pages\Products\Delete.cshtml" />
+      <_ContentIncludedByDefault Remove="Pages\Products\Edit.cshtml" />
+      <_ContentIncludedByDefault Remove="Pages\Products\Index.cshtml" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\ReservationSystem.Domain\ReservationSystem.Domain.csproj" />
+    </ItemGroup>
+
+</Project>

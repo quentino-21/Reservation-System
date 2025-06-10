@@ -29,7 +29,7 @@ public class ProductService : IProductService
             .Paginate(filterDto.PageNumber, filterDto.PageSize)
             .ToListAsync(ct);
         
-        var result = new PaginatedResponseDto<ProductDto>(items, count, filterDto.PageNumber, filterDto.PageSize);
+        var result = new PaginatedResponseDto<ProductDto>(items, filterDto.PageNumber, filterDto.PageSize, count);
         
         return result;
     }
